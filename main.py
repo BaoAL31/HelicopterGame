@@ -7,6 +7,7 @@ import time
 
 pygame.init()
 surface = pygame.display.set_mode((1000, 600))
+pygame.display.set_caption("Helicopter Game")
 h = surface.get_height()
 w = surface.get_width()
 color = (255,255,0)
@@ -27,11 +28,22 @@ class Player(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(pygame.transform.scale(self.image, (95, 150)))
         self.mask_image = self.mask.to_surface()
 
-
     def add_velocity(self, num):
         TERMINAL_VELOCITY = 8
+        print(self.rect.y)
         if -TERMINAL_VELOCITY <= self.vertical_velocity + num <= TERMINAL_VELOCITY:
             self.vertical_velocity += num
+        elif self.vertical_velocity > TERMINAL_VELOCITY:
+            self.vertical_velocity = 8
+        elif self.vertical_velocity < -TERMINAL_VELOCITY:
+            self.vertical_velocity = -7
+        self.fix_out_of_bound()
+
+    def fix_out_of_bound(self):
+        if self.rect.y < -10:
+            self.vertical_velocity += 0.5
+        elif self.rect.y + 150> h:
+            self.vertical_velocity -= 1
 
     def update(self):
         self.rect.y += self.vertical_velocity
